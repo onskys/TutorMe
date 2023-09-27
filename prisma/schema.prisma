@@ -1,0 +1,42 @@
+// schema.prisma
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url = env("POSTGRES_PRISMA_URL") // uses connection pooling
+    directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+}
+
+model Tutor {
+    tutor_id        String     @default(cuid()) @id
+    firstName String
+    lastName  String 
+    email     String
+    password  String 
+    meetings  Meeting[]
+    classes   String[]
+}
+
+model Tutee {
+    tutee_id        String     @default(cuid()) @id
+    firstName String
+    lastName  String 
+    email     String
+    password  String 
+    meetings  Meeting[]
+}
+
+model Meeting {
+  meeting_id String @default(cuid()) @id
+  tutor_id   String
+  tutee_id   String?
+  date       DateTime
+  accepted   Boolean
+  classes    String
+  tutor      Tutor    @relation(fields: [tutor_id], references: [tutor_id])
+  tutee      Tutee?   @relation(fields: [tutee_id], references: [tutee_id])
+}
+

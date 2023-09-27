@@ -2,6 +2,7 @@ import React from "react"
 import { GetStaticProps } from "next"
 import Layout from "../components/Layout"
 import Post, { PostProps } from "../components/Post"
+import prisma from '../lib/prisma';
 
 export const getStaticProps: GetStaticProps = async () => {
   const feed = [
