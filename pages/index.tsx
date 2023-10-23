@@ -1,60 +1,39 @@
-import React from "react"
-import { GetStaticProps } from "next"
-import Layout from "../components/Layout"
-import Post, { PostProps } from "../components/Post"
+// pages/index.tsx
 
-export const getStaticProps: GetStaticProps = async () => {
-  const feed = [
-    {
-      id: "1",
-      title: "Prisma is the perfect ORM for Next.js",
-      content: "[Prisma](https://github.com/prisma/prisma) and Next.js go _great_ together!",
-      published: false,
-      author: {
-        name: "Nikolas Burk",
-        email: "burk@prisma.io",
-      },
-    },
-  ]
-  return { 
-    props: { feed }, 
-    revalidate: 10 
-  }
-}
+import React, { useState } from 'react';
+import axios from 'axios';
 
-type Props = {
-  feed: PostProps[]
-}
+const Home: React.FC = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-const Blog: React.FC<Props> = (props) => {
+  const handleSignup = async () => {
+    try {
+      const response = await axios.post('/api/auth', { action: 'signup', email, password });
+      console.log(response.data.message);
+    } catch (error) {
+      console.error('Error occurred during signup:', error);
+    }
+  };
+
+  const handleLogin = async () => {
+    try {
+      const response = await axios.post('/api/auth', { action: 'login', email, password });
+      console.log(response.data.message);
+    } catch (error) {
+      console.error('Error occurred during login:', error);
+    }
+  };
+
   return (
-    <Layout>
-      <div className="page">
-        <h1>Public Feed</h1>
-        <main>
-          {props.feed.map((post) => (
-            <div key={post.id} className="post">
-              <Post post={post} />
-            </div>
-          ))}
-        </main>
-      </div>
-      <style jsx>{`
-        .post {
-          background: white;
-          transition: box-shadow 0.1s ease-in;
-        }
+    <div>
+      <h1>Welcome to TutorMe</h1>
+      <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+      <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
+      <button onClick={handleSignup}>Sign Up</button>
+      <button onClick={handleLogin}>Login</button>
+    </div>
+  );
+};
 
-        .post:hover {
-          box-shadow: 1px 1px 3px #aaa;
-        }
-
-        .post + .post {
-          margin-top: 2rem;
-        }
-      `}</style>
-    </Layout>
-  )
-}
-
-export default Blog
+export default Home;
